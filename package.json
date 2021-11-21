@@ -17,7 +17,6 @@
     "jszip": "^3.7.1",
     "vue": "^3.2.16",
     "vue-loading-overlay": "4.0",
-    "vue-router": "^4.0.12",
     "vue-toast-notification": "2.0"
   },
   "devDependencies": {
