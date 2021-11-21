@@ -1,9 +1,9 @@
-import AboutPage from './pages/AboutPage.vue'
+import BlindTest from './pages/BlindTest/index.vue'
 import { createWebHashHistory, createRouter } from 'vue-router'
 
 export default createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', component: AboutPage }
+    { path: '/', component: BlindTest }
   ]
 })

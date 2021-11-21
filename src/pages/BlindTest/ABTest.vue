@@ -42,9 +42,10 @@ function select (idx: number) {
 </script>
 
 <template>
-<table class='blindtest'>
+<table class='table'>
   <tr>
-    <th>A</th><th>B</th>
+    <th>A<a class='ml-2' href='#' @click='select(0)'>Select</a></th>
+    <th>B<a class='ml-2' href='#' @click='select(1)'>Select</a></th>
   </tr>
   <tr>
     <td colspan=2>
@@ -53,40 +54,21 @@ function select (idx: number) {
   </tr>
   <tr>
     <td>
-      <button class='play' @click='play(0)'>Play</button>
-      <button class='select' @click='select(0)'>Select</button>
+      <button class='button' @click='play(0)'>
+        <font-awesome-icon class="mr-1" icon="play-circle" />
+        Play
+      </button>
     </td>
     <td>
-      <button class='play' @click='play(1)'>Play</button>
-      <button class='select' @click='select(1)'>Select</button>
+      <button class='button' @click='play(1)'>
+        <font-awesome-icon class="mr-1" icon="play-circle" />
+        Play
+      </button>
     </td>
   </tr>
 </table>
 </template>
 
 <style lang='scss'>
-table.blindtest {
-  border-collapse: collapse;
-  &, tr, td, th {
-    border: 1px solid #666;
-  }
-  td, th {
-    padding: 3px 5px;
-  }
-
-  img {
-    max-width: 100%;
-  }
-
-  button {
-    display: block;
-    width: 100%;
-    &.play {
-      padding: 2em;
-      margin-bottom: .5em;
-    }
-  }
-
-}
 
 </style>

@@ -2,7 +2,7 @@ import JSZip from 'jszip'
 
 const audioCtx = new AudioContext()
 
-interface BlindTestEntry {
+export interface BlindTestEntry {
   label: string
   wavData: AudioBuffer
 }

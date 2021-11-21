@@ -5,7 +5,7 @@ const version = packageJson.version
 
 <template>
 
-<div class='title'>Trgk's audio blind test</div>
+<div class='title'>Trgk's Audio Blind Test</div>
 <div class="subtitle">(Version {{version}})</div>
 
 <p>Utility for creating & performing double blinded test.</p>
