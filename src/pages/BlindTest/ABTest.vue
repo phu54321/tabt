@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { toRefs, onBeforeUnmount, watch } from 'vue'
+import { ref, toRefs, onBeforeUnmount, watch } from 'vue'
+import MusicScrollbar from './MusicScrollbar.vue'
 
 const props = defineProps<{
+  waveformAudioBuffer: AudioBuffer,
   audioBufferA: AudioBuffer,
   audioBufferB: AudioBuffer
 }>()
-const { audioBufferA, audioBufferB } = toRefs(props)
+const { waveformAudioBuffer, audioBufferA, audioBufferB } = toRefs(props)
 
 // ----------------
 
 const audioCtx = new AudioContext()
 let currentPlayingSource: AudioBufferSourceNode | null = null
+let currentPlayingStartTimestamp = 0
+let playbackStartPercent = 0
 
 function killCurrentlyPlayingSource () {
   if (currentPlayingSource) {
@@ -20,17 +24,55 @@ function killCurrentlyPlayingSource () {
   }
 }
 
-function play (idx: number) {
+function play (idx: number | null) {
+  let buffer: AudioBuffer
+  if (idx === null) {
+    if (currentPlayingSource === null) return
+    buffer = currentPlayingSource.buffer!
+  } else {
+    buffer = ((idx === 0) ? audioBufferA : audioBufferB).value
+  }
+
   killCurrentlyPlayingSource()
   const source = audioCtx.createBufferSource()
-  source.buffer = ((idx === 0) ? audioBufferA : audioBufferB).value
+  source.buffer = buffer
   source.connect(audioCtx.destination)
-  source.start()
+  source.start(0, source.buffer!.duration * playbackStartPercent)
   currentPlayingSource = source
+  currentPlayingStartTimestamp = Date.now() / 1000.0 - source.buffer!.duration * playbackStartPercent
 }
 
-watch([audioBufferA, audioBufferB], killCurrentlyPlayingSource)
-onBeforeUnmount(killCurrentlyPlayingSource)
+watch([audioBufferA, audioBufferB], resetTestSession)
+onBeforeUnmount(resetTestSession)
+
+// -------
+
+// Audio time track
+const currentPlaybackPercent = ref(0)
+const timer = setInterval(updateAudioProgress, 0.1)
+onBeforeUnmount(() => clearInterval(timer))
+
+function updateAudioProgress () {
+  if (currentPlayingSource) {
+    const elapsedTime = Date.now() / 1000.0 - currentPlayingStartTimestamp
+    currentPlaybackPercent.value = elapsedTime / currentPlayingSource.buffer!.duration
+  }
+}
+
+function updatePlaybackStart (start: number) {
+  playbackStartPercent = start
+  currentPlaybackPercent.value = start
+  play(null)
+}
+
+// -------
+
+function resetTestSession () {
+  killCurrentlyPlayingSource()
+  currentPlaybackPercent.value = 0
+  currentPlayingStartTimestamp = 0
+  playbackStartPercent = 0
+}
 
 // -------
 
@@ -49,7 +91,7 @@ function select (idx: number) {
   </tr>
   <tr>
     <td colspan=2>
-      <img src='../assets/test.png'>
+      <MusicScrollbar class='music-scroll' :audio-buffer="waveformAudioBuffer" :play-percent='currentPlaybackPercent' @@update:play-percent="updatePlaybackStart" />
     </td>
   </tr>
   <tr>
@@ -70,5 +112,9 @@ function select (idx: number) {
 </template>
 
 <style lang='scss'>
+.music-scroll {
+  width: 500px;
+  height: 300px;
+}
 
 </style>

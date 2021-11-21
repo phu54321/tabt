@@ -86,10 +86,12 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
 <template>
 <ABTest
   v-if='abTestDataPending.length > 0'
+  :waveform-audio-buffer="blindTest.entries[0].wavData"
   :audio-buffer-a='abTestDataPending[0].soundA'
   :audio-buffer-b='abTestDataPending[0].soundB'
   @select='abTestDataPending[0]?.resolve'
-></ABTest>
+>
+</ABTest>
 
 <bulma-modal v-if='finalOrder'>
   <TestResult :entries='blindTest.entries' :final-order='finalOrder' :logs='logs' />
