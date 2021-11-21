@@ -1,9 +1,10 @@
 <script setup lang='ts'>
-import { reactive, toRefs, onMounted, watch } from 'vue'
+import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { shellSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
 import { BlindTest, BlindTestEntry } from './blindTestData'
 import ABTest from './ABTest.vue'
+import TestResult from './TestResult.vue'
 import { pValuedComparator } from './pValuedComparator'
 
 const props = defineProps<{
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>()
 
 const logs = reactive([] as string[])
+const finalOrder = ref(null as null | number[])
 
 // eslint-disable-next-line func-call-spacing
 const emit = defineEmits<{
@@ -24,7 +26,10 @@ const { blindTest } = toRefs(props)
 onMounted(reset)
 watch(blindTest, reset)
 
-function reset () {
+async function reset () {
+  logs.splice(0, logs.length)
+  finalOrder.value = null
+
   const entries = blindTest.value.entries
   const sortee = shuffle(Array.from(Array(entries.length).keys()))
   async function comparator (left: number, right: number): Promise<number> {
@@ -40,8 +45,10 @@ function reset () {
     emit('log', message)
     return ret
   }
-  shellSort(sortee, comparator)
+  await shellSort(sortee, comparator)
+
   emit('completed', sortee)
+  finalOrder.value = sortee
 }
 
 /// ////////////////////
@@ -62,7 +69,7 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
       soundA,
       soundB,
       resolve: function (e) {
-        console.log(`Selected ${e}`)
+        console.log(`Selected ${e}`) // TODO: make to toast
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
         if (e === 'A') resolve(coin ? -1 : 1)
@@ -83,7 +90,12 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
   @select='abTestDataPending[0]?.resolve'
 ></ABTest>
 
-<ul>
-  <li v-for='log, i of logs' :key='i'>{{log}}</li>
-</ul>
+<teleport to='body'>
+  <div class="modal is-active" v-if='finalOrder'>
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <TestResult :entries='blindTest.entries' :final-order='finalOrder' :logs='logs' />
+    </div>
+  </div>
+</teleport>
 </template>
