@@ -2,6 +2,14 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
 import BlindTest from './components/BlindTest.vue'
+import zipb64 from './../testData/hdxxx.zip.base64?raw'
+import { loadBlindTest } from './blindTestData'
+
+;(async function () {
+  const bt = await loadBlindTest(zipb64)
+  console.log(bt)
+})()
+
 </script>
 
 <template>
