@@ -6,6 +6,7 @@ import { BlindTest, BlindTestEntry } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import { pValuedComparator } from './pValuedComparator'
+import BulmaModal from './../../utils/BulmaModal.vue'
 
 const props = defineProps<{
   blindTest: BlindTest
@@ -90,12 +91,7 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
   @select='abTestDataPending[0]?.resolve'
 ></ABTest>
 
-<teleport to='body'>
-  <div class="modal is-active" v-if='finalOrder'>
-    <div class="modal-background"></div>
-    <div class="modal-content">
-      <TestResult :entries='blindTest.entries' :final-order='finalOrder' :logs='logs' />
-    </div>
-  </div>
-</teleport>
+<bulma-modal v-if='finalOrder'>
+  <TestResult :entries='blindTest.entries' :final-order='finalOrder' :logs='logs' />
+</bulma-modal>
 </template>
