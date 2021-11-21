@@ -4,11 +4,15 @@
 import BlindTest from './components/BlindTest.vue'
 import zipb64 from './../testData/hdxxx.zip.base64?raw'
 import { loadBlindTest } from './blindTestData'
+import { ref } from '@vue/reactivity'
 
-;(async function () {
-  const bt = await loadBlindTest(zipb64)
-  console.log(bt)
-})()
+const audioBufferA = ref(null as null | AudioBuffer)
+const audioBufferB = ref(null as null | AudioBuffer)
+
+loadBlindTest(zipb64).then(bt => {
+  audioBufferA.value = bt.entries[0].wavData
+  audioBufferB.value = bt.entries[1].wavData
+})
 
 </script>
 
@@ -16,7 +20,7 @@ import { loadBlindTest } from './blindTestData'
 <div id="app">
   <h1>Trgk's Audio Blind Test</h1>
   <h2>Test 1/15</h2>
-  <BlindTest></BlindTest>
+  <BlindTest v-if='audioBufferA && audioBufferB' :audio-buffer-a="audioBufferA" :audio-buffer-b="audioBufferB"></BlindTest>
 
 </div>
 </template>

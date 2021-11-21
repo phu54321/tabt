@@ -1,4 +1,43 @@
 <script setup lang="ts">
+import { toRefs, onBeforeUnmount, watch } from 'vue'
+
+const props = defineProps<{
+  audioBufferA: AudioBuffer,
+  audioBufferB: AudioBuffer
+}>()
+const { audioBufferA, audioBufferB } = toRefs(props)
+
+// ----------------
+
+const audioCtx = new AudioContext()
+let currentPlayingSource: AudioBufferSourceNode | null = null
+
+function killCurrentlyPlayingSource () {
+  if (currentPlayingSource) {
+    currentPlayingSource.stop()
+    currentPlayingSource.disconnect()
+    currentPlayingSource = null
+  }
+}
+
+function play (idx: number) {
+  killCurrentlyPlayingSource()
+  const source = audioCtx.createBufferSource()
+  source.buffer = ((idx === 0) ? audioBufferA : audioBufferB).value
+  source.connect(audioCtx.destination)
+  source.start()
+  currentPlayingSource = source
+}
+
+watch([audioBufferA, audioBufferB], killCurrentlyPlayingSource)
+onBeforeUnmount(killCurrentlyPlayingSource)
+
+// -------
+
+const emit = defineEmits<{(eventName: 'select', selection: 'A' | 'B'): void}>()
+function select (idx: number) {
+  emit('select', idx === 0 ? 'A' : 'B')
+}
 
 </script>
 
@@ -14,12 +53,12 @@
   </tr>
   <tr>
     <td>
-      <button class='play'>Play</button>
-      <button class='select'>Select</button>
+      <button class='play' @click='play(0)'>Play</button>
+      <button class='select' @click='select(0)'>Select</button>
     </td>
     <td>
-      <button class='play'>Play</button>
-      <button class='select'>Select</button>
+      <button class='play' @click='play(1)'>Play</button>
+      <button class='select' @click='select(1)'>Select</button>
     </td>
   </tr>
 </table>
