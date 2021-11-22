@@ -93,7 +93,7 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
 >
 </ABTest>
 
-<bulma-modal v-if='finalOrder'>
-  <TestResult :entries='blindTest.entries' :final-order='finalOrder' :logs='logs' />
+<bulma-modal :show='finalOrder'>
+  <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :logs='logs' />
 </bulma-modal>
 </template>

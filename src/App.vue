@@ -40,9 +40,9 @@ const showAbout = ref(false)
   <BlindTest />
 </div>
 
-<BulmaModal v-if='showAbout'>
+<bulma-modal :show='showAbout'>
   <AboutPage @close='showAbout = false' />
-</BulmaModal>
+</bulma-modal>
 
 </template>
 
