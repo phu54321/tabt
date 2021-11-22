@@ -1,0 +1,17 @@
+{
+  "label": "Calibration (for test integrity)",
+  "entries": [
+    {
+      "label": "Low",
+      "filename": "low.flac"
+    },
+    {
+      "label": "Middle",
+      "filename": "middle.flac"
+    },
+    {
+      "label": "high",
+      "filename": "high.flac"
+    }
+  ]
+}
