@@ -49,5 +49,6 @@ const showAbout = ref(false)
 <style lang='scss'>
 #app {
   font-family: sans-serif;
+  user-select: none;
 }
 </style>
