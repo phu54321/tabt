@@ -40,14 +40,22 @@ async function reset () {
   async function comparator (left: number, right: number): Promise<number> {
     console.log(`Compare #${left} vs #${right}`)
     const ret = await pValuedComparator(entries[left], entries[right], comparatorSingle)
-    let message: string
+    let labeledMessage: string
+    let anonymizedMessage: string
     if (ret < 0) {
-      message = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
+      labeledMessage = `${entries[left].label} < ${entries[right].label} (p-value = ${-ret.toFixed(3)})`
+      anonymizedMessage = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
     } else {
-      message = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
+      labeledMessage = `${entries[left].label} > ${entries[right].label} (p-value = ${ret.toFixed(3)})`
+      anonymizedMessage = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
     }
-    logs.push(message)
-    emit('log', message)
+    logs.push(labeledMessage)
+    emit('log', labeledMessage)
+    bulmaToast.toast({
+      message: anonymizedMessage,
+      type: 'is-success',
+      animate: { in: 'fadeIn', out: 'fadeOut' }
+    })
     return ret
   }
   sortee = await mergeSort(sortee, comparator)
@@ -98,8 +106,7 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
   :audio-buffer-a='abTestDataPending[0].soundA'
   :audio-buffer-b='abTestDataPending[0].soundB'
   @select='abTestDataPending[0]?.resolve'
->
-</ABTest>
+/>
 
 <bulma-modal :show='finalOrder'>
   <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :logs='logs' />
