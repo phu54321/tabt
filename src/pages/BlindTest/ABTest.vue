@@ -84,7 +84,8 @@ function select (idx: number) {
 </script>
 
 <template>
-<table class='table abtest'>
+<p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
+<table class='table abtest is-bordered'>
   <tr>
     <th>A<a class='ml-2' href='#' @click='select(0)'>Select</a></th>
     <th>B<a class='ml-2' href='#' @click='select(1)'>Select</a></th>

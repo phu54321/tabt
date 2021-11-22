@@ -18,12 +18,12 @@ const { entries, finalOrder, logs } = toRefs(props)
   </header>
   <section class="modal-card-body">
     <div class="content">
-      <div class="subtitle">Order</div>
+      <div class="subtitle">순서 (좋은 것 → 안 좋은 것)</div>
       <ol>
         <li v-for='o of finalOrder' :key='o'>{{entries[o].label}}</li>
       </ol>
 
-      <div class="subtitle">Test log</div>
+      <div class="subtitle">테스트 기록</div>
       <ul>
         <li v-for='log, i of logs' :key='i'>{{log}}</li>
       </ul>
