@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, toRefs, watch, onMounted, onBeforeUnmount } from 'vue'
+import quickselect from 'quickselect'
 
 const props = defineProps<{
   audioBuffer: AudioBuffer,
@@ -31,23 +32,40 @@ function renderCanvas () {
   for (let x = 0; x < width; x++) {
     const startIndex = x * length / width | 0
     const endIndex = (x + 1) * length / width | 0
+    const intervalSamples = channel0.slice(startIndex, endIndex)
+
     let maxSample = -1
     let minSample = 1
-
-    for (let i = startIndex; i < endIndex; i++) {
-      const sample = channel0[i]
+    for (const sample of intervalSamples) {
       if (maxSample < sample) maxSample = sample
       if (minSample > sample) minSample = sample
     }
+    const intervalLength = intervalSamples.length
+    const q1Index = intervalLength * 1 / 4 | 0
+    quickselect(intervalSamples, q1Index)
+    const q1Sample = intervalSamples[q1Index]
+
+    const q3Index = intervalLength * 3 / 4 | 0
+    quickselect(intervalSamples, q3Index)
+    const q3Sample = intervalSamples[q3Index]
 
     // maxSample = 1 → y = 0, minSample = -1 → y = height - 1
     const maxSampleY = ((1 - (maxSample + 1) / 2.0) * (height - 1) + 0.5) | 0
     const minSampleY = ((1 - (minSample + 1) / 2.0) * (height - 1) + 0.5) | 0
     for (let iy = maxSampleY; iy <= minSampleY; iy++) {
       const index = (iy * width + x) * 4
-      imageData.data[index + 0] = 128
-      imageData.data[index + 1] = 128
-      imageData.data[index + 2] = 128
+      imageData.data[index + 0] = 160
+      imageData.data[index + 1] = 160
+      imageData.data[index + 2] = 160
+    }
+
+    const q3SampleY = ((1 - (q3Sample + 1) / 2.0) * (height - 1) + 0.5) | 0
+    const q1SampleY = ((1 - (q1Sample + 1) / 2.0) * (height - 1) + 0.5) | 0
+    for (let iy = q3SampleY; iy <= q1SampleY; iy++) {
+      const index = (iy * width + x) * 4
+      imageData.data[index + 0] = 96
+      imageData.data[index + 1] = 96
+      imageData.data[index + 2] = 96
     }
   }
 
@@ -124,6 +142,7 @@ function onResize () {
 <style lang='scss'>
 .canvas-container {
   position: relative;
+  outline: 1px solid #eee;
   canvas {
     position: absolute;
     width: 100%;

@@ -15,6 +15,7 @@
     "buffer": "^6.0.3",
     "bulma": "^0.9.3",
     "jszip": "^3.7.1",
+    "quickselect": "^2.0.0",
     "vue": "^3.2.16",
     "vue-loading-overlay": "4.0",
     "vue-toast-notification": "2.0"
