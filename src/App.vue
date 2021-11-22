@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import './scss/styles.scss'
-import 'animate.css/animate.css'
 import { ref } from 'vue'
 import BulmaModal from './utils/BulmaModal.vue'
 import AboutPage from './pages/AboutPage.vue'
 import Loading from 'vue-loading-overlay'
+
+import './scss/styles.scss'
+import 'animate.css/animate.css'
 import 'vue-loading-overlay/dist/vue-loading.css'
+import 'nprogress/nprogress.css'
 
 import { BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
 
 // This is where the application will put zipb64 data in.
-const data = '<<<<<>>>>>'
+import defaultData from './calibrate.zip.base64?raw'
+// const data = '<<<<<>>>>>'
 
 // Main logic begins
-const zipb64 = data.slice(5, data.length - 5)
+const zipb64 = defaultData
 const blindTest = ref(null as null | BlindTest)
 const showNoTestModal = ref(false)
 

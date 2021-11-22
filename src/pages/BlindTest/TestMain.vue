@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ref, reactive, toRefs, onMounted, watch } from 'vue'
+import { ref, reactive, toRefs, onMounted, onBeforeUnmount, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
 import { BlindTest, BlindTestEntry } from './blindTestData'
@@ -9,6 +9,7 @@ import { pValuedComparator } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
 import TestSplash from './TestSplash.vue'
 import * as bulmaToast from 'bulma-toast'
+import NProgress from 'nprogress'
 
 const props = defineProps<{
   blindTest: BlindTest
@@ -29,8 +30,19 @@ const showSplash = ref(true)
 /// ////////////////////
 onMounted(reset)
 watch(blindTest, reset)
+onBeforeUnmount(() => {
+  NProgress.done()
+})
 
 async function reset () {
+  NProgress.done()
+
+  NProgress.configure({
+    trickle: false,
+    showSpinner: false
+  })
+  NProgress.start()
+
   logs.splice(0, logs.length)
   finalOrder.value = null
   showSplash.value = true
@@ -62,6 +74,7 @@ async function reset () {
 
   emit('completed', sortee)
   finalOrder.value = sortee
+  NProgress.done()
 }
 
 /// ////////////////////
@@ -87,6 +100,7 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
           type: 'is-info',
           animate: { in: 'fadeIn', out: 'fadeOut' }
         })
+        NProgress.inc(0.02)
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
         if (e === 'A') resolve(coin ? -1 : 1)
