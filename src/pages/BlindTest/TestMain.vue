@@ -62,7 +62,7 @@ interface ABTestData {
 const abTestDataPending = reactive([] as ABTestData[])
 
 function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise<number> {
-  const coin = 0 // Math.random() < 0.5
+  const coin = Math.random() < 0.5
   const soundA = coin ? left.wavData : right.wavData
   const soundB = coin ? right.wavData : left.wavData
   return new Promise(resolve => {
