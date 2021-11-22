@@ -7,6 +7,7 @@ import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import { pValuedComparator } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
+import TestSplash from './TestSplash.vue'
 
 const props = defineProps<{
   blindTest: BlindTest
@@ -22,6 +23,7 @@ const emit = defineEmits<{
 }>()
 
 const { blindTest } = toRefs(props)
+const showSplash = ref(true)
 
 /// ////////////////////
 onMounted(reset)
@@ -30,6 +32,7 @@ watch(blindTest, reset)
 async function reset () {
   logs.splice(0, logs.length)
   finalOrder.value = null
+  showSplash.value = true
 
   const entries = blindTest.value.entries
   const sortee = shuffle(Array.from(Array(entries.length).keys()))
@@ -95,5 +98,9 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
 
 <bulma-modal :show='finalOrder'>
   <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :logs='logs' />
+</bulma-modal>
+
+<bulma-modal :show='showSplash'>
+  <TestSplash :test='blindTest' @close='showSplash = false' />
 </bulma-modal>
 </template>
