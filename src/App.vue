@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import './scss/styles.scss'
 import 'animate.css/animate.css'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import BulmaModal from './utils/BulmaModal.vue'
 import AboutPage from './pages/AboutPage.vue'
 import Loading from 'vue-loading-overlay'
 import 'vue-loading-overlay/dist/vue-loading.css'
 
-import calibrateBase64 from './calibrate.zip.base64?raw'
 import { BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
 
@@ -15,16 +14,17 @@ import BlindTestVue from './pages/BlindTest/TestMain.vue'
 const data = '<<<<<>>>>>'
 
 // Main logic begins
-const zipb64 = ref(data.slice(5, data.length - 5))
+const zipb64 = data.slice(5, data.length - 5)
 const blindTest = ref(null as null | BlindTest)
+const showNoTestModal = ref(false)
 
 async function onZipLoad () {
-  let b64 = zipb64.value
-  if (b64.length === 0) b64 = calibrateBase64
-  blindTest.value = await loadBlindTest(b64)
+  if (zipb64.length === 0) {
+    showNoTestModal.value = true
+  }
+  blindTest.value = await loadBlindTest(zipb64)
 }
 
-watch(zipb64, onZipLoad)
 onZipLoad()
 
 // ---------------------------
@@ -67,7 +67,7 @@ const showAbout = ref(false)
 </nav>
 
 <div class="container p-3">
-  <Loading :active="blindTest === null">
+  <Loading :active="!showNoTestModal && blindTest === null">
     <template v-slot:after>
       <p class="has-text-centered">Loading...</p>
     </template>
@@ -78,6 +78,19 @@ const showAbout = ref(false)
 
 <bulma-modal :show='showAbout'>
   <AboutPage @close='showAbout = false' />
+</bulma-modal>
+
+<bulma-modal :show='showNoTestModal'>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">첨부된 테스트가 없습니다.</p>
+    </header>
+    <section class="modal-card-body modal-card-foot">
+      <div class="content">
+        <p>테스트를 첨부해주세요.</p>
+      </div>
+    </section>
+  </div>
 </bulma-modal>
 
 </template>
