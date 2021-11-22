@@ -41,7 +41,6 @@ export async function pValuedComparator<T> (left: T, right: T, comparatorSingle:
   for (let n = 1; n <= maxComparison; n++) {
     if (await comparatorSingle(left, right) > 0) leftWin++
     else rightWin++
-    console.log(`n ${n}, left ${leftWin}, right ${rightWin}`)
 
     const pValue = binomialPValue(n, leftWin)
     if (pValue < maxPValue) {
