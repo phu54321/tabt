@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import './scss/styles.scss'
-import 'animate.css/animate.scss'
+import 'animate.css/animate.css'
 import { ref } from 'vue'
 import BlindTest from './pages/BlindTest/index.vue'
 import BulmaModal from './utils/BulmaModal.vue'
