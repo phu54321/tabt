@@ -1,11 +1,11 @@
 import { createApp } from 'vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMusic, faPlayCircle, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faMusic, faPlayCircle, faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import App from './App.vue'
 
-library.add(faMusic, faGithub, faPlayCircle, faUpload)
+library.add(faMusic, faGithub, faPlayCircle, faQuestionCircle)
 
 const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
