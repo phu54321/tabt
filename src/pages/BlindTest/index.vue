@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref } from 'vue'
-import zipb64 from '../../../testData/hdxxx.zip.base64?raw'
+import zipb64 from '../../../testData/thdtest.zip.base64?raw'
 import { BlindTest, loadBlindTest } from './blindTestData'
 import TestMain from './TestMain.vue'
 import Loading from 'vue-loading-overlay'
