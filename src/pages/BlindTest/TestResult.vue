@@ -17,7 +17,7 @@ const { entries, finalOrder, logs } = toRefs(props)
     <p class="modal-card-title">테스트 결과</p>
   </header>
   <section class="modal-card-body">
-    <div class="content">
+    <div class="content allow-select">
       <div class="subtitle">순서 (좋은 것 → 안 좋은 것)</div>
       <ol>
         <li v-for='o of finalOrder' :key='o'>{{entries[o].label}}</li>
@@ -34,3 +34,9 @@ const { entries, finalOrder, logs } = toRefs(props)
   </footer>
 </div>
 </template>
+
+<style>
+.allow-select {
+  user-select: initial;
+}
+</style>
