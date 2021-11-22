@@ -30,7 +30,7 @@ const showAbout = ref(false)
     <div class="navbar-end">
       <a class="navbar-item">Create new test</a>
       <a class="navbar-item" @click='showAbout = true'>About</a>
-      <a class="navbar-item">
+      <a class="navbar-item" href='https://github.com/phu5431/tabt' target="blank">
         <font-awesome-icon class="mr-1" :icon="['fab', 'github']"></font-awesome-icon>Github
       </a>
     </div>
