@@ -11,18 +11,22 @@ defineEmits<{(eventName: 'close'): void}>()
 <template>
 <div class="modal-card">
   <header class="modal-card-head">
-    <p class="modal-card-title">{{test.label}}</p>
+    <p class="modal-card-title">테스트 설명</p>
+    <button class="delete" aria-label="close" @click='$emit("close")'></button>
   </header>
-  <section class="modal-card-body">
+  <section class="modal-card-body modal-card-foot">
     <div class="content">
-      <div class="subtitle">비교할 대상</div>
+      <p class="title">{{test.label}}</p>
       <ol>
         <li v-for='entry, i of test.entries' :key='i'>{{entry.label}}</li>
       </ol>
     </div>
   </section>
-  <footer class="modal-card-foot">
-    <button class="button" @click='$emit("close")'>테스트 시작</button>
-  </footer>
 </div>
 </template>
+
+<style>
+.title-scrolling {
+  overflow-x: scroll;
+}
+</style>
