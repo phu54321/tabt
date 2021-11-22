@@ -8,6 +8,7 @@ import TestResult from './TestResult.vue'
 import { pValuedComparator } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
 import TestSplash from './TestSplash.vue'
+import * as bulmaToast from 'bulma-toast'
 
 const props = defineProps<{
   blindTest: BlindTest
@@ -73,7 +74,11 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
       soundA,
       soundB,
       resolve: function (e) {
-        console.log(`Selected ${e}`) // TODO: make to toast
+        bulmaToast.toast({
+          message: `Selected ${e}`,
+          type: 'is-info',
+          animate: { in: 'fadeIn', out: 'fadeOut' }
+        })
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
         if (e === 'A') resolve(coin ? -1 : 1)
