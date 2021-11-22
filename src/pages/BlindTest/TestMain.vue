@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref, reactive, toRefs, onMounted, watch } from 'vue'
-import { shellSort } from '../../utils/asyncSort'
+import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
 import { BlindTest, BlindTestEntry } from './blindTestData'
 import ABTest from './ABTest.vue'
@@ -36,7 +36,7 @@ async function reset () {
   showSplash.value = true
 
   const entries = blindTest.value.entries
-  const sortee = shuffle(Array.from(Array(entries.length).keys()))
+  let sortee = shuffle(Array.from(Array(entries.length).keys()))
   async function comparator (left: number, right: number): Promise<number> {
     console.log(`Compare #${left} vs #${right}`)
     const ret = await pValuedComparator(entries[left], entries[right], comparatorSingle)
@@ -50,7 +50,7 @@ async function reset () {
     emit('log', message)
     return ret
   }
-  await shellSort(sortee, comparator)
+  sortee = await mergeSort(sortee, comparator)
 
   emit('completed', sortee)
   finalOrder.value = sortee

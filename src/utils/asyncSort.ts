@@ -5,93 +5,32 @@ export type SortPair<T> = {
 
 type Comparator<T> = (left: T, right: T) => Promise<number>
 
-export async function shellSort<T> (entries: T[], comparator: Comparator<T>): Promise<T[]> {
-  const gaps = [701, 301, 132, 57, 23, 10, 4, 1]
-  const { length } = entries
-  const a = entries.slice()
-
-  for (const gap of gaps) {
-    if (gap >= length) continue
-    const subRets = splitArray(a, gap)
-    const subSorted = await Promise.all(subRets.map(arr => insertionSort(arr, comparator)))
-    mergeArray(a, subSorted, gap)
-  }
-  return a
-}
-
-interface InsertionSortSubtask {
-  completed: boolean
-  startCursor: number
-  currentHighCursor: number
-}
-
-async function insertionSort<T> (entries: T[], comparator: Comparator<T>): Promise<T[]> {
-  const a = entries.slice()
-  const length = entries.length
-  const tasks: InsertionSortSubtask[] = []
-  for (let i = 0; i < length; i++) {
-    tasks.push({
-      startCursor: i,
-      currentHighCursor: i,
-      completed: false
-    })
-  }
-  tasks[0].completed = true
-
-  const remainingTasks: InsertionSortSubtask[] = tasks.slice(1)
-
-  function noCollisionWithPreviousTasks (task: InsertionSortSubtask): boolean {
-    const { startCursor } = task
-    const prevTask = tasks[startCursor - 1]
-    if (!prevTask.completed) {
-      if (prevTask.currentHighCursor === task.currentHighCursor) return false
-    }
-    return true
-  }
-
-  while (remainingTasks.length) {
-    const taskIdx = Math.random() * remainingTasks.length | 0
-    const task = remainingTasks[taskIdx]
-    if (!noCollisionWithPreviousTasks(task)) continue
-
-    const { currentHighCursor } = task
-    if (await comparator(a[currentHighCursor - 1], a[currentHighCursor]) < 0) {
-      task.completed = true
-      remainingTasks.splice(taskIdx, 1)
-      continue
+async function merge <T> (left: T[], right: T[], comparator: Comparator<T>): Promise<T[]> {
+  const arr = []
+  // Break out of loop if any one of the array gets empty
+  while (left.length && right.length) {
+    // Pick the larger among the largest element of left and right sub arrays
+    if (await comparator(left[0], right[0]) < 0) {
+      arr.push(left.shift())
     } else {
-      const temp = a[currentHighCursor]
-      a[currentHighCursor] = a[currentHighCursor - 1]
-      a[currentHighCursor - 1] = temp
-      task.currentHighCursor--
-      if (task.currentHighCursor === 0) {
-        task.completed = true
-        remainingTasks.splice(taskIdx, 1)
-      }
+      arr.push(right.shift())
     }
   }
 
-  return a
+  // Concatenating the leftover elements
+  // (in case we didn't go through the entire left or right array)
+  return [...arr, ...left, ...right] as T[]
 }
 
-function splitArray<T> (entries: T[], gap: number): T[][] {
-  const ret = []
-  for (let start = 0; start < gap; start++) {
-    const subRet = []
-    for (let i = start; i < entries.length; i += gap) {
-      subRet.push(entries[i])
-    }
-    ret.push(subRet)
-  }
-  return ret
-}
+export async function mergeSort <T> (array: T[], comparator: Comparator<T>): Promise<T[]> {
+  const half = array.length / 2
 
-function mergeArray<T> (out: T[], subSorted: T[][], gap: number): void {
-  for (let start = 0; start < gap; start++) {
-    const subRet = subSorted[start]
-    let cursor = 0
-    for (let i = start; i < out.length; i += gap) {
-      out[i] = subRet[cursor++]
-    }
+  // Base case or terminating case
+  if (array.length < 2) {
+    return array
   }
+
+  const left = array.splice(0, half)
+  const e = await Promise.all([mergeSort(left, comparator), mergeSort(array, comparator)])
+  return await merge(e[0], e[1], comparator)
 }
