@@ -84,15 +84,10 @@ function select (idx: number) {
 </script>
 
 <template>
-<table class='table'>
+<table class='table abtest'>
   <tr>
     <th>A<a class='ml-2' href='#' @click='select(0)'>Select</a></th>
     <th>B<a class='ml-2' href='#' @click='select(1)'>Select</a></th>
-  </tr>
-  <tr>
-    <td colspan=2>
-      <MusicScrollbar class='music-scroll' :audio-buffer="waveformAudioBuffer" :play-percent='currentPlaybackPercent' @@update:play-percent="updatePlaybackStart" />
-    </td>
   </tr>
   <tr>
     <td>
@@ -109,12 +104,17 @@ function select (idx: number) {
     </td>
   </tr>
 </table>
+<MusicScrollbar class='music-scroll is-full' :audio-buffer="waveformAudioBuffer" :play-percent='currentPlaybackPercent' @@update:play-percent="updatePlaybackStart" />
 </template>
 
 <style lang='scss'>
 .music-scroll {
-  width: 500px;
   height: 300px;
+}
+
+.abtest {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 </style>
