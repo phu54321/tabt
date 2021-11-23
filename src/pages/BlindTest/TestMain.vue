@@ -103,8 +103,8 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
         NProgress.inc(0.02)
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
-        if (e === 'A') resolve(coin ? -1 : 1)
-        else resolve(coin ? 1 : -1)
+        if (e === 'A') resolve(coin ? 1 : -1)
+        else resolve(coin ? -1 : 1)
       }
     }
     abTestDataPending.push(data)

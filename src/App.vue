@@ -15,12 +15,12 @@ import BlindTestVue from './pages/BlindTest/TestMain.vue'
 // Main logic begins
 
 // This is where the application will put zipb64 data in.
-const data = '<<<<<>>>>>'
-const zipb64 = data.slice(5, data.length - 5)
+// const data = '<<<<<>>>>>'
+// const zipb64 = data.slice(5, data.length - 5)
 
 // For testing purpose
-// import defaultData from './calibrate.zip.base64?raw'
-// const zipb64 = defaultData
+import defaultData from './calibrate.zip.base64?raw'
+const zipb64 = defaultData
 
 const blindTest = ref(null as null | BlindTest)
 const showNoTestModal = ref(false)

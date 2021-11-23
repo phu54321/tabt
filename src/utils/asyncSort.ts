@@ -10,7 +10,7 @@ async function merge <T> (left: T[], right: T[], comparator: Comparator<T>): Pro
   // Break out of loop if any one of the array gets empty
   while (left.length && right.length) {
     // Pick the larger among the largest element of left and right sub arrays
-    if (await comparator(left[0], right[0]) < 0) {
+    if (await comparator(left[0], right[0]) > 0) {
       arr.push(left.shift())
     } else {
       arr.push(right.shift())
