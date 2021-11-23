@@ -1,6 +1,5 @@
 import JSZip from 'jszip'
-
-const audioCtx = new AudioContext()
+import { audioCtx } from './../../utils/sharedAudioCtx'
 
 export interface BlindTestEntry {
   label: string

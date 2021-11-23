@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, toRefs, onBeforeUnmount, watch } from 'vue'
+import { audioCtx } from '../../utils/sharedAudioCtx'
 import MusicScrollbar from './MusicScrollbar.vue'
 
 const props = defineProps<{
@@ -11,7 +12,6 @@ const { waveformAudioBuffer, audioBufferA, audioBufferB } = toRefs(props)
 
 // ----------------
 
-const audioCtx = new AudioContext()
 let currentPlayingSource: AudioBufferSourceNode | null = null
 let currentPlayingStartTimestamp = 0
 let playbackStartPercent = 0
