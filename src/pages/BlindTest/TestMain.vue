@@ -50,7 +50,7 @@ async function reset () {
   const entries = blindTest.value.entries
   let sortee = shuffle(Array.from(Array(entries.length).keys()))
   async function comparator (left: number, right: number): Promise<number> {
-    console.log(`Compare #${left} vs #${right}`)
+    logs.push(`Compare ${entries[left].label}(1) vs ${entries[right].label}(2)`)
     const ret = await pValuedComparator(entries[left], entries[right], comparatorSingle)
     let labeledMessage: string
     let anonymizedMessage: string
@@ -103,8 +103,14 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
         NProgress.inc(0.02)
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
-        if (e === 'A') resolve(coin ? 1 : -1)
-        else resolve(coin ? -1 : 1)
+        const result =
+          (e === 'A')
+            ? (coin ? 1 : -1)
+            : (coin ? -1 : 1)
+        logs.push(
+          result === 1 ? '(1) > (2)' : '(1) < (2)'
+        )
+        resolve(result)
       }
     }
     abTestDataPending.push(data)

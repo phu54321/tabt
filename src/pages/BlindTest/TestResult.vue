@@ -25,7 +25,7 @@ const { entries, finalOrder, logs } = toRefs(props)
 
       <div class="subtitle">테스트 기록</div>
       <ul>
-        <li v-for='log, i of logs' :key='i'>{{log}}</li>
+        <li v-for='log, i of logs' :key='i' :class='{"result-small": log === "(1) < (2)" || log === "(1) > (2)"}'>{{log}}</li>
       </ul>
     </div>
   </section>
@@ -38,5 +38,11 @@ const { entries, finalOrder, logs } = toRefs(props)
 <style>
 .allow-select {
   user-select: initial;
+}
+
+.result-small {
+  font-size: .8em;
+  margin-left: 3em;
+  line-height: 1.2em;
 }
 </style>
