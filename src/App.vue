@@ -11,16 +11,14 @@ import 'nprogress/nprogress.css'
 
 import { BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
-
-// Main logic begins
+import defaultData from './calibrate.zip.base64?raw'
 
 // This is where the application will put zipb64 data in.
-// const data = '<<<<<>>>>>'
-// const zipb64 = data.slice(5, data.length - 5)
-
-// For testing purpose
-import defaultData from './calibrate.zip.base64?raw'
-const zipb64 = defaultData
+const data = '<<<<<>>>>>'
+let zipb64 = data.slice(5, data.length - 5)
+if (zipb64.length === 0) {
+  zipb64 = defaultData
+}
 
 const blindTest = ref(null as null | BlindTest)
 const showNoTestModal = ref(false)
