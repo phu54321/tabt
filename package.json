@@ -1,6 +1,6 @@
 {
   "name": "audio-blind-test",
-  "version": "21.11.23.635",
+  "version": "21.11.24.259",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
