@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { ref, reactive, toRefs, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
 import { BlindTest, BlindTestEntry } from './blindTestData'
@@ -9,7 +9,6 @@ import { pValuedComparator } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
 import TestSplash from './TestSplash.vue'
 import * as bulmaToast from 'bulma-toast'
-import NProgress from 'nprogress'
 
 const props = defineProps<{
   blindTest: BlindTest
@@ -44,18 +43,18 @@ async function reset () {
     logs.push(`Compare ${entries[left].label}(1) vs ${entries[right].label}(2)`)
     const ret = await pValuedComparator(entries[left], entries[right], comparatorSingle)
     let labeledMessage: string
-    let anonymizedMessage: string
+    let unlabeledMessage: string
     if (ret < 0) {
       labeledMessage = `${entries[left].label} < ${entries[right].label} (p-value = ${-ret.toFixed(3)})`
-      anonymizedMessage = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
+      unlabeledMessage = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
     } else {
       labeledMessage = `${entries[left].label} > ${entries[right].label} (p-value = ${ret.toFixed(3)})`
-      anonymizedMessage = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
+      unlabeledMessage = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
     }
     logs.push(labeledMessage)
     emit('log', labeledMessage)
     bulmaToast.toast({
-      message: anonymizedMessage,
+      message: unlabeledMessage,
       type: 'is-success',
       animate: { in: 'fadeIn', out: 'fadeOut' }
     })
