@@ -30,18 +30,9 @@ const showSplash = ref(true)
 /// ////////////////////
 onMounted(reset)
 watch(blindTest, reset)
-onBeforeUnmount(() => {
-  NProgress.done()
-})
 
 async function reset () {
-  NProgress.done()
-
-  NProgress.configure({
-    trickle: false,
-    showSpinner: false
-  })
-  NProgress.start()
+  testCount.value = 0
 
   logs.splice(0, logs.length)
   finalOrder.value = null
@@ -74,7 +65,6 @@ async function reset () {
 
   emit('completed', sortee)
   finalOrder.value = sortee
-  NProgress.done()
 }
 
 /// ////////////////////
@@ -85,11 +75,15 @@ interface ABTestData {
 }
 
 const abTestDataPending = reactive([] as ABTestData[])
+const testCount = ref(0)
 
 function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise<number> {
   const coin = Math.random() < 0.5
   const soundA = coin ? left.wavData : right.wavData
   const soundB = coin ? right.wavData : left.wavData
+
+  testCount.value++
+
   return new Promise(resolve => {
     const data: ABTestData = {
       soundA,
@@ -100,7 +94,6 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
           type: 'is-info',
           animate: { in: 'fadeIn', out: 'fadeOut' }
         })
-        NProgress.inc(0.02)
         const idx = abTestDataPending.indexOf(data)
         abTestDataPending.splice(idx, 1)
         const result =
@@ -120,6 +113,9 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
 </script>
 
 <template>
+
+<p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
+<p class="mt-1 subtitle has-text-centered">Test #{{testCount}}</p>
 <ABTest
   v-if='abTestDataPending.length > 0'
   :waveform-audio-buffer="blindTest.entries[0].wavData"

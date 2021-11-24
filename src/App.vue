@@ -7,7 +7,6 @@ import Loading from 'vue-loading-overlay'
 import './scss/styles.scss'
 import 'animate.css/animate.css'
 import 'vue-loading-overlay/dist/vue-loading.css'
-import 'nprogress/nprogress.css'
 
 import { BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
