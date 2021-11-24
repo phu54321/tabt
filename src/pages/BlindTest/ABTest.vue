@@ -84,27 +84,29 @@ function select (idx: number) {
 </script>
 
 <template>
-<table class='table abtest is-bordered'>
-  <tr>
-    <th>A<a class='ml-2' href='#' @click='select(0)'>Select</a></th>
-    <th>B<a class='ml-2' href='#' @click='select(1)'>Select</a></th>
-  </tr>
-  <tr>
-    <td>
-      <button class='button' @click='play(0)'>
-        <font-awesome-icon class="mr-1" icon="play-circle" />
-        Play
-      </button>
-    </td>
-    <td>
-      <button class='button' @click='play(1)'>
-        <font-awesome-icon class="mr-1" icon="play-circle" />
-        Play
-      </button>
-    </td>
-  </tr>
-</table>
-<MusicScrollbar class='music-scroll is-full' :audio-buffer="waveformAudioBuffer" :play-percent='currentPlaybackPercent' @@update:play-percent="updatePlaybackStart" />
+<div>
+  <table class='table abtest is-bordered'>
+    <tr>
+      <th>A<a class='ml-2' href='#' @click='select(0)'>Select</a></th>
+      <th>B<a class='ml-2' href='#' @click='select(1)'>Select</a></th>
+    </tr>
+    <tr>
+      <td>
+        <button class='button' @click='play(0)'>
+          <font-awesome-icon class="mr-1" icon="play-circle" />
+          Play
+        </button>
+      </td>
+      <td>
+        <button class='button' @click='play(1)'>
+          <font-awesome-icon class="mr-1" icon="play-circle" />
+          Play
+        </button>
+      </td>
+    </tr>
+  </table>
+  <MusicScrollbar class='music-scroll is-full' :audio-buffer="waveformAudioBuffer" :play-percent='currentPlaybackPercent' @@update:play-percent="updatePlaybackStart" />
+</div>
 </template>
 
 <style lang='scss'>

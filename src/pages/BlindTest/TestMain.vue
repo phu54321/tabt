@@ -115,13 +115,16 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
 
 <p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
 <p class="mt-1 subtitle has-text-centered">Test #{{testCount}}</p>
-<ABTest
-  v-if='abTestDataPending.length > 0'
-  :waveform-audio-buffer="blindTest.entries[0].wavData"
-  :audio-buffer-a='abTestDataPending[0].soundA'
-  :audio-buffer-b='abTestDataPending[0].soundB'
-  @select='abTestDataPending[0]?.resolve'
-/>
+<transition name="abtest-fadein">
+  <ABTest
+    v-if='abTestDataPending.length > 0'
+    :key = testCount
+    :waveform-audio-buffer="blindTest.entries[0].wavData"
+    :audio-buffer-a='abTestDataPending[0].soundA'
+    :audio-buffer-b='abTestDataPending[0].soundB'
+    @select='abTestDataPending[0]?.resolve'
+  />
+</transition>
 
 <bulma-modal :show='finalOrder'>
   <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :logs='logs' />
@@ -131,3 +134,15 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
   <TestSplash :test='blindTest' @close='showSplash = false' />
 </bulma-modal>
 </template>
+
+<style>
+.abtest-fadein-enter-active {
+  transition: opacity 0.3s;
+}
+.abtest-fadein-enter-from {
+  opacity: 0.8;
+}
+.abtest-fadein-leave-active {
+  display: none;
+}
+</style>
