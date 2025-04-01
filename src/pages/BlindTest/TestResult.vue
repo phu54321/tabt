@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
-import { BlindTestEntry } from './blindTestData'
+import { BlindTestEntry, ComparionResult } from './blindTestData'
 
 const props = defineProps<{
   entries: BlindTestEntry[]
   finalOrder: number[]
-  logs: string[]
+  logs: ComparionResult[]
 }>()
+
+function comparisonResultToSTring (log: ComparionResult): string {
+  return [
+    `(${props.entries[log.leftCandidate].label})`, log.leftHigher ? '>' : '<', `(${props.entries[log.rightCandidate].label})`
+  ].join(' ')
+}
 
 const { entries, finalOrder, logs } = toRefs(props)
 </script>
@@ -25,7 +31,7 @@ const { entries, finalOrder, logs } = toRefs(props)
 
       <div class="subtitle">테스트 기록</div>
       <ul>
-        <li v-for='log, i of logs' :key='i' :class='{"result-small": log === "(1) < (2)" || log === "(1) > (2)"}'>{{log}}</li>
+        <li v-for='log, i of logs' :key='i'>{{comparisonResultToSTring(log)}}</li>
       </ul>
     </div>
   </section>

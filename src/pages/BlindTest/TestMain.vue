@@ -2,7 +2,7 @@
 import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
-import { BlindTest, BlindTestEntry } from './blindTestData'
+import { BlindTest, BlindTestEntry, ComparionResult } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import { pValuedComparator } from './pValuedComparator'
@@ -14,15 +14,10 @@ const props = defineProps<{
   blindTest: BlindTest
 }>()
 
-const logs = reactive([] as string[])
+const logs = reactive([] as ComparionResult[])
 const finalOrder = ref(null as null | number[])
 
 // eslint-disable-next-line func-call-spacing
-const emit = defineEmits<{
-  (eventName: 'log', message: string): void,
-  (eventName: 'completed', order: number[]): void
-}>()
-
 const { blindTest } = toRefs(props)
 const showSplash = ref(true)
 
@@ -40,19 +35,13 @@ async function reset () {
   const entries = blindTest.value.entries
   let sortee = shuffle(Array.from(Array(entries.length).keys()))
   async function comparator (left: number, right: number): Promise<number> {
-    logs.push(`Compare ${entries[left].label}(1) vs ${entries[right].label}(2)`)
-    const ret = await pValuedComparator(entries[left], entries[right], comparatorSingle)
-    let labeledMessage: string
+    const ret = await pValuedComparator(left, right, (l, r) => comparatorSingle(l, r, entries))
     let unlabeledMessage: string
     if (ret < 0) {
-      labeledMessage = `${entries[left].label} < ${entries[right].label} (p-value = ${-ret.toFixed(3)})`
       unlabeledMessage = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
     } else {
-      labeledMessage = `${entries[left].label} > ${entries[right].label} (p-value = ${ret.toFixed(3)})`
       unlabeledMessage = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
     }
-    logs.push(labeledMessage)
-    emit('log', labeledMessage)
     bulmaToast.toast({
       message: unlabeledMessage,
       type: 'is-success',
@@ -61,8 +50,6 @@ async function reset () {
     return ret
   }
   sortee = await mergeSort(sortee, comparator)
-
-  emit('completed', sortee)
   finalOrder.value = sortee
 }
 
@@ -76,10 +63,13 @@ interface ABTestData {
 const abTestDataPending = reactive([] as ABTestData[])
 const testCount = ref(0)
 
-function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise<number> {
+function comparatorSingle (leftIndex: number, rightIndex: number, entries: BlindTestEntry[]): Promise<number> {
   const coin = Math.random() < 0.5
-  const soundA = coin ? left.wavData : right.wavData
-  const soundB = coin ? right.wavData : left.wavData
+  const leftEntry = entries[leftIndex]
+  const rightEntry = entries[rightIndex]
+
+  const soundA = coin ? leftEntry.wavData : rightEntry.wavData
+  const soundB = coin ? rightEntry.wavData : leftEntry.wavData
 
   testCount.value++
 
@@ -99,9 +89,11 @@ function comparatorSingle (left: BlindTestEntry, right: BlindTestEntry): Promise
           (e === 'A')
             ? (coin ? 1 : -1)
             : (coin ? -1 : 1)
-        logs.push(
-          result === 1 ? '(1) > (2)' : '(1) < (2)'
-        )
+        logs.push({
+          leftCandidate: leftIndex,
+          rightCandidate: rightIndex,
+          leftHigher: (result === 1)
+        })
         resolve(result)
       }
     }

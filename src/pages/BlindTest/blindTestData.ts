@@ -11,6 +11,12 @@ export interface BlindTest {
   entries: BlindTestEntry[]
 }
 
+export interface ComparionResult {
+  leftCandidate: number
+  rightCandidate: number
+  leftHigher: boolean
+}
+
 /// ///////
 
 export async function loadBlindTest (b64: string): Promise<BlindTest> {
