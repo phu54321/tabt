@@ -19,6 +19,23 @@ export interface ComparionResult {
 
 /// ///////
 
+function shuffle<T> (array: T[]): T[] {
+  let currentIndex = array.length
+
+  // While there remain elements to shuffle...
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    const randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]]
+  }
+
+  return array
+}
+
 export async function loadBlindTest (b64: string): Promise<BlindTest> {
   const z = new JSZip()
   await z.loadAsync(b64, { base64: true })
@@ -28,7 +45,7 @@ export async function loadBlindTest (b64: string): Promise<BlindTest> {
   const manifest = JSON.parse(await manifestFile.async('string'))
   return {
     label: manifest.label,
-    entries: await Promise.all(manifest.entries.map((e: any) => {
+    entries: shuffle(await Promise.all(manifest.entries.map((e: any) => {
       return new Promise((resolve) => {
         const { label: entryLabel, filename } = e
         console.log(`loading ${filename}`)
@@ -45,6 +62,6 @@ export async function loadBlindTest (b64: string): Promise<BlindTest> {
           })
         })
       })
-    }))
+    })))
   }
 }

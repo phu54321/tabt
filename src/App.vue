@@ -79,7 +79,9 @@ const showAbout = ref(false)
     </template>
   </Loading>
 
-  <BlindTestVue v-if='blindTest !== null' :blind-test='blindTest' />
+  <template v-if="blindTest !== null">
+    <BlindTestVue :blind-test='blindTest' />
+  </template>
 </div>
 
 <bulma-modal :show='showAbout'>

@@ -5,6 +5,7 @@ import { shuffle } from '../../utils/shuffle'
 import { BlindTest, BlindTestEntry, ComparionResult } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
+import TestProgress from './TestProgress.vue'
 import { pValuedComparator } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
 import TestSplash from './TestSplash.vue'
@@ -104,8 +105,8 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 </script>
 
 <template>
-
 <p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
+<TestProgress :entries="blindTest.entries" :logs="logs" />
 <p class="mt-1 subtitle has-text-centered">Test #{{testCount}}</p>
 <transition name="abtest-fadein">
   <ABTest
