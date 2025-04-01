@@ -2,7 +2,7 @@
 import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
-import { BlindTest, BlindTestEntry, ComparionResult } from './blindTestData'
+import { type BlindTest, type BlindTestEntry, type ComparionResult } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import TestProgress from './TestProgress.vue'

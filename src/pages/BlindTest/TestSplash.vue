@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BlindTest } from './blindTestData'
+import { type BlindTest } from './blindTestData'
 
 defineProps<{
   test: BlindTest

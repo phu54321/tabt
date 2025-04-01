@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { BlindTestEntry, ComparionResult } from './blindTestData'
+import { type BlindTestEntry, type ComparionResult } from './blindTestData'
 
 /**
  * Converts an HSL color value to RGB. Conversion formula

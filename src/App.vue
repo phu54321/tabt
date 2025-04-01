@@ -8,7 +8,7 @@ import './scss/styles.scss'
 import 'animate.css/animate.css'
 import 'vue-loading-overlay/dist/vue-loading.css'
 
-import { BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
+import { type BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
 import defaultData from './calibrate.zip.base64?raw'
 
@@ -73,6 +73,7 @@ const showAbout = ref(false)
 </nav>
 
 <div class="container p-3">
+  <!-- @vue-ignore -->
   <Loading :active="!showNoTestModal && blindTest === null">
     <template v-slot:after>
       <p class="has-text-centered">Loading...</p>

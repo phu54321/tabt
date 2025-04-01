@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
-import { BlindTestEntry, ComparionResult } from './blindTestData'
+import { type BlindTestEntry, type ComparionResult } from './blindTestData'
 
 const props = defineProps<{
   entries: BlindTestEntry[]
