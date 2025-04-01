@@ -29,8 +29,8 @@ export function binomialPValue (n: number, k: number): number {
   if (k >= n / 2) k = n - k
 
   let partialSum = 0
-  for (let i = 0; i <= k; i++) partialSum += table[n][k]
-  return partialSum * 1.0 / Math.pow(2, n) * 2
+  for (let i = 0; i <= k; i++) partialSum += table[n][i]
+  return partialSum * 2.0 / Math.pow(2, n)
 }
 
 /// -----------------------
@@ -43,7 +43,7 @@ export async function pValuedComparator<T> (left: T, right: T, comparatorSingle:
     else rightWin++
 
     const pValue = binomialPValue(n, leftWin)
-    if (pValue < maxPValue) {
+    if (pValue <= maxPValue) {
       return (leftWin < rightWin) ? -pValue : pValue
     }
   }
