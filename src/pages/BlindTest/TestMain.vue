@@ -27,7 +27,7 @@ onMounted(reset)
 watch(blindTest, reset)
 
 async function reset () {
-  testCount.value = 0
+  testIndex.value = 0
 
   logs.splice(0, logs.length)
   finalOrder.value = null
@@ -62,7 +62,7 @@ interface ABTestData {
 }
 
 const abTestDataPending = reactive([] as ABTestData[])
-const testCount = ref(0)
+const testIndex = ref(0)
 
 function comparatorSingle (leftIndex: number, rightIndex: number, entries: BlindTestEntry[]): Promise<number> {
   const coin = Math.random() < 0.5
@@ -71,8 +71,6 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 
   const soundA = coin ? leftEntry.wavData : rightEntry.wavData
   const soundB = coin ? rightEntry.wavData : leftEntry.wavData
-
-  testCount.value++
 
   return new Promise(resolve => {
     const data: ABTestData = {
@@ -95,6 +93,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
           rightCandidate: rightIndex,
           leftHigher: (result === 1)
         })
+        testIndex.value++
         resolve(result)
       }
     }
@@ -107,11 +106,11 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 <template>
 <p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
 <TestProgress :entries="blindTest.entries" :logs="logs" />
-<p class="mt-1 subtitle has-text-centered">Test #{{testCount}}</p>
+<p class="mt-1 subtitle has-text-centered">Test #{{testIndex + 1}}</p>
 <transition name="abtest-fadein">
   <ABTest
     v-if='abTestDataPending.length > 0'
-    :key = testCount
+    :key = testIndex
     :waveform-audio-buffer="blindTest.entries[0].wavData"
     :audio-buffer-a='abTestDataPending[0].soundA'
     :audio-buffer-b='abTestDataPending[0].soundB'
