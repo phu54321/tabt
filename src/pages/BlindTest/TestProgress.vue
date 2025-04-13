@@ -63,7 +63,7 @@ const selectedEntry = computed(() => {
   .selection {
     display: inline-block;
     padding: 0 5px;
-    margin: 0 2px;
+    margin: 2px 2px;
     border-radius: 3px;
     /* border: 1px solid rgba(0, 0, 0, 0.2); */
   }
