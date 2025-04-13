@@ -16,12 +16,7 @@ function selectedEntry(e: ABComparisonResult) {
 <template>
 <div class="log-view-intermediate">
   <div class='selection' v-for="log, i of comparisonLogs" :key="i" :style="{ backgroundColor: hslToRgb(selectedEntry(log) * 0.17, 0.8, 0.8)}">
-    <template v-if="log.leftHigher">
-      {{ log.lhs + 1 }} > {{ log.rhs + 1 }}
-    </template>
-    <template v-else>
-      {{ log.rhs + 1 }} > {{ log.lhs + 1 }}
-    </template>
+    {{ selectedEntry(log) + 1 }}
   </div>
 </div>
 </template>
