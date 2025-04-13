@@ -2,7 +2,7 @@
 import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
-import { type BlindTest, type BlindTestEntry, type ComparionResult } from './blindTestData'
+import { type BlindTest, type BlindTestEntry, type ComparisonResult } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import TestProgress from './TestProgress.vue'
@@ -15,7 +15,7 @@ const props = defineProps<{
   blindTest: BlindTest
 }>()
 
-const logs = reactive([] as ComparionResult[])
+const logs = reactive([] as ComparisonResult[])
 const finalOrder = ref(null as null | number[])
 
 // eslint-disable-next-line func-call-spacing

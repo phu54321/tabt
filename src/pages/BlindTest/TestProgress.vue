@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { type BlindTestEntry, type ComparionResult } from './blindTestData'
+import { type BlindTestEntry, type ComparisonResult } from './blindTestData'
 
 /**
  * Converts an HSL color value to RGB. Conversion formula
@@ -40,7 +40,7 @@ function hueToRgb (p: number, q: number, t: number): number {
 
 const props = defineProps<{
   entries: BlindTestEntry[]
-  logs: ComparionResult[]
+  logs: ComparisonResult[]
 }>()
 
 const selectedEntry = computed(() => {

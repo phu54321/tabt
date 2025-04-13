@@ -11,7 +11,7 @@ export interface BlindTest {
   entries: BlindTestEntry[]
 }
 
-export interface ComparionResult {
+export interface ComparisonResult {
   leftCandidate: number
   rightCandidate: number
   leftHigher: boolean

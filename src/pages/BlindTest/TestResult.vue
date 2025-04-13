@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
-import { type BlindTestEntry, type ComparionResult } from './blindTestData'
+import { type BlindTestEntry, type ComparisonResult } from './blindTestData'
 
 const props = defineProps<{
   entries: BlindTestEntry[]
   finalOrder: number[]
-  logs: ComparionResult[]
+  logs: ComparisonResult[]
 }>()
 
-function comparisonResultToSTring (log: ComparionResult): string {
+function comparisonResultToSTring (log: ComparisonResult): string {
   return [
     `(${props.entries[log.leftCandidate].label})`, log.leftHigher ? '>' : '<', `(${props.entries[log.rightCandidate].label})`
   ].join(' ')
