@@ -15,7 +15,7 @@ const props = defineProps<{
   blindTest: BlindTest
 }>()
 
-const logs = reactive([] as ComparisonResult[])
+const comparisonLogs = reactive([] as ComparisonResult[])
 const finalOrder = ref(null as null | number[])
 
 // eslint-disable-next-line func-call-spacing
@@ -29,7 +29,7 @@ watch(blindTest, reset)
 async function reset () {
   testIndex.value = 0
 
-  logs.splice(0, logs.length)
+  comparisonLogs.splice(0, comparisonLogs.length)
   finalOrder.value = null
   showSplash.value = true
 
@@ -37,18 +37,20 @@ async function reset () {
   let sortee = shuffle(Array.from(Array(entries.length).keys()))
   async function comparator (left: number, right: number): Promise<number> {
     const ret = await pValuedComparator(left, right, (l, r) => comparatorSingle(l, r, entries))
+    const { signedPValue } = ret
     let unlabeledMessage: string
-    if (ret < 0) {
-      unlabeledMessage = `#${left} < #${right} (p-value = ${-ret.toFixed(3)})`
+    if (signedPValue < 0) {
+      unlabeledMessage = `#${left} < #${right} (p-value = ${-signedPValue.toFixed(3)})`
     } else {
-      unlabeledMessage = `#${left} > #${right} (p-value = ${ret.toFixed(3)})`
+      unlabeledMessage = `#${left} > #${right} (p-value = ${signedPValue.toFixed(3)})`
     }
     bulmaToast.toast({
       message: unlabeledMessage,
       type: 'is-success',
       animate: { in: 'fadeIn', out: 'fadeOut' }
     })
-    return ret
+    // todo: add sortLog here
+    return signedPValue
   }
   sortee = await mergeSort(sortee, comparator)
   finalOrder.value = sortee
@@ -88,7 +90,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
           (e === 'A')
             ? (coin ? 1 : -1)
             : (coin ? -1 : 1)
-        logs.push({
+        comparisonLogs.push({
           leftCandidate: leftIndex,
           rightCandidate: rightIndex,
           leftHigher: (result === 1)
@@ -105,7 +107,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 
 <template>
 <p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
-<TestProgress :entries="blindTest.entries" :logs="logs" />
+<TestProgress :entries="blindTest.entries" :comparisonLogs="comparisonLogs" />
 <p class="mt-1 subtitle has-text-centered">Test #{{testIndex + 1}}</p>
 <transition name="abtest-fadein">
   <ABTest
@@ -119,7 +121,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 </transition>
 
 <bulma-modal :show='finalOrder'>
-  <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :logs='logs' />
+  <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :comparisonLogs='comparisonLogs' />
 </bulma-modal>
 
 <bulma-modal :show='showSplash'>

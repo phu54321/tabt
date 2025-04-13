@@ -35,7 +35,12 @@ export function binomialPValue (n: number, k: number): number {
 
 /// -----------------------
 
-export async function pValuedComparator<T> (left: T, right: T, comparatorSingle: (left: T, right: T) => Promise<number>): Promise<number> {
+export interface PValuedComparatorResult {
+  signedPValue: number
+  comparisonCount: number
+}
+
+export async function pValuedComparator<T> (left: T, right: T, comparatorSingle: (left: T, right: T) => Promise<number>): Promise<PValuedComparatorResult> {
   let leftWin = 0
   let rightWin = 0
   for (let n = 1; n <= maxComparison; n++) {
@@ -44,10 +49,16 @@ export async function pValuedComparator<T> (left: T, right: T, comparatorSingle:
 
     const pValue = binomialPValue(n, leftWin)
     if (pValue <= maxPValue) {
-      return (leftWin < rightWin) ? -pValue : pValue
+      return {
+        signedPValue: (leftWin < rightWin) ? -pValue : pValue,
+        comparisonCount: leftWin + rightWin
+      }
     }
   }
 
   const pValue = binomialPValue(maxComparison, leftWin)
-  return (leftWin < rightWin) ? -pValue : pValue
+  return {
+    signedPValue: (leftWin < rightWin) ? -pValue : pValue,
+    comparisonCount: leftWin + rightWin
+  }
 }

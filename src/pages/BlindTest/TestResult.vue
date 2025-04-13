@@ -5,7 +5,7 @@ import { type BlindTestEntry, type ComparisonResult } from './blindTestData'
 const props = defineProps<{
   entries: BlindTestEntry[]
   finalOrder: number[]
-  logs: ComparisonResult[]
+  comparisonLogs: ComparisonResult[]
 }>()
 
 function comparisonResultToSTring (log: ComparisonResult): string {
@@ -14,7 +14,7 @@ function comparisonResultToSTring (log: ComparisonResult): string {
   ].join(' ')
 }
 
-const { entries, finalOrder, logs } = toRefs(props)
+const { entries, finalOrder, comparisonLogs } = toRefs(props)
 </script>
 
 <template>
@@ -31,7 +31,7 @@ const { entries, finalOrder, logs } = toRefs(props)
 
       <div class="subtitle">테스트 기록</div>
       <ul>
-        <li v-for='log, i of logs' :key='i'>{{comparisonResultToSTring(log)}}</li>
+        <li v-for='log, i of comparisonLogs' :key='i'>{{comparisonResultToSTring(log)}}</li>
       </ul>
     </div>
   </section>

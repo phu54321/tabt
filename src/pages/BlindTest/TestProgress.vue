@@ -40,11 +40,11 @@ function hueToRgb (p: number, q: number, t: number): number {
 
 const props = defineProps<{
   entries: BlindTestEntry[]
-  logs: ComparisonResult[]
+  comparisonLogs: ComparisonResult[]
 }>()
 
 const selectedEntry = computed(() => {
-  return props.logs.map(l => l.leftHigher ? l.leftCandidate : l.rightCandidate)
+  return props.comparisonLogs.map(l => l.leftHigher ? l.leftCandidate : l.rightCandidate)
 })
 </script>
 
