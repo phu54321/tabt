@@ -10,15 +10,10 @@ import 'vue-loading-overlay/dist/vue-loading.css'
 
 import { type BlindTest, loadBlindTest } from './pages/BlindTest/blindTestData'
 import BlindTestVue from './pages/BlindTest/TestMain.vue'
-import defaultData from './calibrate.zip.base64?raw'
 
 // This is where the application will put zipb64 data in.
 const data = '<<<<<>>>>>'
 let zipb64 = data.slice(5, data.length - 5)
-if (zipb64.length === 0) {
-  zipb64 = defaultData
-}
-
 const blindTest = ref(null as null | BlindTest)
 const showNoTestModal = ref(false)
 
@@ -27,11 +22,21 @@ async function onZipLoad () {
     showNoTestModal.value = true
     return
   }
-  console.log(zipb64)
+  showNoTestModal.value = false
   blindTest.value = await loadBlindTest(zipb64)
 }
 
 onZipLoad()
+
+// Development mode
+if (import.meta.env.MODE === 'development') {
+  import('./calibrate.zip.base64?raw').then(m => {
+  // import('./aac_ldac_blind_test.zip.base64?raw').then(m => {
+   zipb64 = m.default
+   onZipLoad()
+  })
+}
+
 
 // ---------------------------
 
