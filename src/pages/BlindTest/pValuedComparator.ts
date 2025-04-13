@@ -35,30 +35,42 @@ export function binomialPValue (n: number, k: number): number {
 
 /// -----------------------
 
-export interface PValuedComparatorResult {
+export interface PValuedComparatorResult<T> {
+  lhs: T
+  rhs: T
+  leftLower: number,
+  rightLower: number,
   signedPValue: number
   comparisonCount: number
 }
 
-export async function pValuedComparator<T> (left: T, right: T, comparatorSingle: (left: T, right: T) => Promise<number>): Promise<PValuedComparatorResult> {
-  let leftWin = 0
-  let rightWin = 0
+export async function pValuedComparator<T> (left: T, right: T, comparatorSingle: (left: T, right: T) => Promise<number>): Promise<PValuedComparatorResult<T>> {
+  let leftLower = 0
+  let rightLower = 0
   for (let n = 1; n <= maxComparison; n++) {
-    if (await comparatorSingle(left, right) > 0) leftWin++
-    else rightWin++
+    if (await comparatorSingle(left, right) < 0) leftLower++
+    else rightLower++
 
-    const pValue = binomialPValue(n, leftWin)
+    const pValue = binomialPValue(n, leftLower)
     if (pValue <= maxPValue) {
       return {
-        signedPValue: (leftWin < rightWin) ? -pValue : pValue,
-        comparisonCount: leftWin + rightWin
+        lhs: left,
+        rhs: right,
+        leftLower,
+        rightLower,
+        signedPValue: (leftLower > rightLower) ? -pValue : pValue,
+        comparisonCount: leftLower + rightLower
       }
     }
   }
 
-  const pValue = binomialPValue(maxComparison, leftWin)
+  const pValue = binomialPValue(maxComparison, leftLower)
   return {
-    signedPValue: (leftWin < rightWin) ? -pValue : pValue,
-    comparisonCount: leftWin + rightWin
+    lhs: left,
+    rhs: right,
+    leftLower,
+    rightLower,
+    signedPValue: (leftLower > rightLower) ? -pValue : pValue,
+    comparisonCount: leftLower + rightLower
   }
 }

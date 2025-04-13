@@ -2,11 +2,11 @@
 import { ref, reactive, toRefs, onMounted, watch } from 'vue'
 import { mergeSort } from '../../utils/asyncSort'
 import { shuffle } from '../../utils/shuffle'
-import { type BlindTest, type BlindTestEntry, type ComparisonResult } from './blindTestData'
+import type { BlindTest, BlindTestEntry, ABComparisonResult } from './blindTestData'
 import ABTest from './ABTest.vue'
 import TestResult from './TestResult.vue'
 import TestProgress from './TestProgress.vue'
-import { pValuedComparator } from './pValuedComparator'
+import { pValuedComparator, type PValuedComparatorResult } from './pValuedComparator'
 import BulmaModal from './../../utils/BulmaModal.vue'
 import TestSplash from './TestSplash.vue'
 import * as bulmaToast from 'bulma-toast'
@@ -15,7 +15,8 @@ const props = defineProps<{
   blindTest: BlindTest
 }>()
 
-const comparisonLogs = reactive([] as ComparisonResult[])
+const comparisonLogs = reactive([] as ABComparisonResult[])
+const sortLogs = reactive([] as PValuedComparatorResult<number>[])
 const finalOrder = ref(null as null | number[])
 
 // eslint-disable-next-line func-call-spacing
@@ -30,6 +31,8 @@ async function reset () {
   testIndex.value = 0
 
   comparisonLogs.splice(0, comparisonLogs.length)
+  sortLogs.splice(0, sortLogs.length)
+
   finalOrder.value = null
   showSplash.value = true
 
@@ -49,8 +52,8 @@ async function reset () {
       type: 'is-success',
       animate: { in: 'fadeIn', out: 'fadeOut' }
     })
-    // todo: add sortLog here
-    return signedPValue
+    sortLogs.push(ret)
+    return -signedPValue // negative because we want higher p-value to be "smaller" in the sort order, i.e. we want to sort by -signedPValue
   }
   sortee = await mergeSort(sortee, comparator)
   finalOrder.value = sortee
@@ -91,8 +94,8 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
             ? (coin ? 1 : -1)
             : (coin ? -1 : 1)
         comparisonLogs.push({
-          leftCandidate: leftIndex,
-          rightCandidate: rightIndex,
+          lhs: leftIndex,
+          rhs: rightIndex,
           leftHigher: (result === 1)
         })
         testIndex.value++
@@ -107,7 +110,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 
 <template>
 <p class="title has-text-centered">소리가 더 좋은걸 고르세요.</p>
-<TestProgress :entries="blindTest.entries" :comparisonLogs="comparisonLogs" />
+<TestProgress :entries="blindTest.entries" :comparison-logs="comparisonLogs" />
 <p class="mt-1 subtitle has-text-centered">Test #{{testIndex + 1}}</p>
 <transition name="abtest-fadein">
   <ABTest
@@ -121,7 +124,7 @@ function comparatorSingle (leftIndex: number, rightIndex: number, entries: Blind
 </transition>
 
 <bulma-modal :show='finalOrder'>
-  <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :comparisonLogs='comparisonLogs' />
+  <TestResult :entries='blindTest.entries' :final-order='finalOrder!' :sort-logs='sortLogs' />
 </bulma-modal>
 
 <bulma-modal :show='showSplash'>
